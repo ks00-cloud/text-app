@@ -241,7 +241,7 @@ function callAI(text) {
     var clean = raw.replace(/```json|```/g, '').trim();
     var startIdx = clean.indexOf('{');
     var endIdx = clean.lastIndexOf('}');
-if (startIdx !== -1 && endIdx !== -1) { clean = clean.slice(startIdx, endIdx + 1); }
+    if (startIdx !== -1 && endIdx !== -1) { clean = clean.slice(startIdx, endIdx + 1); }
     var parsed = JSON.parse(clean);
     if (!Array.isArray(parsed.orders)) throw new Error('형식 오류');
     return parsed;
