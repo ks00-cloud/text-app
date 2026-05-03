@@ -352,7 +352,12 @@ const SYSTEM_PROMPT = `너는 카카오톡 공동구매 오픈채팅방의 주�
 async function callAI(text) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": "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",
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-allow-browser": "true"
+    },
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
       max_tokens: 2000,
@@ -361,23 +366,29 @@ async function callAI(text) {
     })
   });
   const data = await res.json();
+  if (!data.content || !data.content.length) throw new Error('API 응답 없음');
   const raw = data.content.map(i => i.text || '').join('');
-  return JSON.parse(raw.replace(/```json|```/g, '').trim());
+  const clean = raw.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  if (!parsed.orders || !Array.isArray(parsed.orders)) throw new Error('orders 형식 오류');
+  return parsed;
 }
 
 function mergeResults(results) {
-  const allKeys = [...new Set(results.flatMap(r =>
+  const validResults = results.filter(r => r && Array.isArray(r.orders) && r.orders.length > 0);
+  if (validResults.length === 0) return [];
+  const allKeys = [...new Set(validResults.flatMap(r =>
     r.orders.map(o => `${o.name}||${o.item || ''}||${o.date || ''}`)
   ))];
   return allKeys.map(key => {
     const [name, item, date] = key.split('||');
-    const hits = results.filter(r =>
+    const hits = validResults.filter(r =>
       r.orders.some(o => o.name === name && (o.item || '') === item && (o.date || '') === date)
     );
     const qtys = hits.map(r =>
       r.orders.find(o => o.name === name && (o.item || '') === item && (o.date || '') === date).qty
     ).sort((a, b) => a - b);
-    return { name, item, date, qty: qtys[Math.floor(qtys.length / 2)], confirmed: hits.length === 3 };
+    return { name, item, date, qty: qtys[Math.floor(qtys.length / 2)], confirmed: hits.length === results.length };
   });
 }
 
@@ -408,7 +419,13 @@ async function parseOrders() {
     const results = [];
     for (let round = 1; round <= 3; round++) {
       setStep(round);
-      results.push(await callAI(text));
+      try {
+        const parsed = await callAI(text);
+        results.push(parsed);
+      } catch (e) {
+        console.warn(`${round}회차 실패:`, e);
+        results.push({ orders: [] });
+      }
       await new Promise(r => setTimeout(r, 300));
     }
     setStep(4);
