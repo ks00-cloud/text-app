@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공구 주문 정리</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Black+Han+Sans&display=swap');
+
+  :root {
+    --kakao: #FEE500;
+    --kakao-dark: #3A1D1D;
+    --bg: #1a1a2e;
+    --surface: #16213e;
+    --green: #4ade80;
+    --red: #f87171;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nanum Gothic', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header {
+    background: var(--kakao); padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(254,229,0,0.3);
+  }
+  header .logo {
+    width: 36px; height: 36px; background: var(--kakao-dark);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  header h1 { font-family: 'Black Han Sans', sans-serif; font-size: 18px; color: var(--kakao-dark); flex: 1; }
+
+  .stats-bar {
+    background: var(--kakao-dark); color: var(--kakao);
+    padding: 10px 20px; display: flex; gap: 20px;
+    font-size: 13px; font-weight: 700; overflow-x: auto;
+  }
+  .stat { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .stat span { color: white; font-weight: 800; }
+
+  .main { padding: 16px; max-width: 800px; margin: 0 auto; }
+
+  .input-section {
+    background: var(--surface); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 16px; margin-bottom: 16px;
+  }
+
+  .tab-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .tab-btn {
+    flex: 1; padding: 9px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12); background: transparent;
+    color: var(--muted); font-family: 'Nanum Gothic', sans-serif;
+    font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  }
+  .tab-btn.active { background: var(--kakao); color: var(--kakao-dark); border-color: var(--kakao); }
+
+  .chat-input {
+    width: 100%; background: var(--bg); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px; padding: 12px; color: var(--text);
+    font-family: 'Nanum Gothic', sans-serif; font-size: 14px;
+    resize: vertical; min-height: 100px; transition: border-color 0.2s;
+  }
+  .chat-input:focus { outline: none; border-color: var(--kakao); }
+  .chat-input::placeholder { color: var(--muted); }
+  .input-hint { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+  .file-upload-area {
+    border: 2px dashed rgba(254,229,0,0.4); border-radius: 12px;
+    padding: 20px; text-align: center; cursor: pointer;
+    transition: all 0.2s; margin-bottom: 10px;
+    background: rgba(254,229,0,0.03); position: relative;
+  }
+  .file-upload-area:hover, .file-upload-area.drag-over {
+    border-color: var(--kakao); background: rgba(254,229,0,0.08);
+  }
+  .file-upload-area input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .file-upload-icon { font-size: 28px; margin-bottom: 6px; }
+  .file-upload-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .file-upload-text strong { color: var(--kakao); }
+
+  .parse-btn {
+    width: 100%; margin-top: 10px; background: var(--kakao); color: var(--kakao-dark);
+    border: none; border-radius: 10px; padding: 14px;
+    font-family: 'Black Han Sans', sans-serif; font-size: 16px; cursor: pointer;
+    transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .parse-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(254,229,0,0.4); }
+  .parse-btn:active { transform: translateY(0); }
+  .parse-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .orders-section { margin-bottom: 90px; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .section-title { font-family: 'Black Han Sans', sans-serif; font-size: 16px; color: var(--kakao); }
+  .clear-btn {
+    background: rgba(248,113,113,0.15); color: var(--red);
+    border: 1px solid rgba(248,113,113,0.3); border-radius: 8px;
+    padding: 6px 12px; font-size: 12px; cursor: pointer;
+    font-family: 'Nanum Gothic', sans-serif; font-weight: 700;
+  }
+
+  .order-card {
+    background: var(--surface); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 14px; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 12px;
+    animation: slideIn 0.3s ease; position: relative; overflow: hidden;
+  }
+  .order-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--kakao); border-radius: 3px 0 0 3px;
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .order-num {
+    width: 28px; height: 28px; background: var(--kakao); color: var(--kakao-dark);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; flex-shrink: 0;
+  }
+  .order-info { flex: 1; min-width: 0; }
+  .order-name { font-weight: 800; font-size: 15px; margin-bottom: 2px; }
+  .order-detail { font-size: 12px; color: var(--muted); }
+  .order-date { font-size: 11px; color: var(--kakao); opacity: 0.8; margin-top: 2px; }
+
+  .order-qty { display: flex; align-items: center; gap: 8px; }
+  .qty-btn {
+    width: 28px; height: 28px; background: rgba(255,255,255,0.1);
+    border: none; border-radius: 6px; color: var(--text); font-size: 16px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;
+  }
+  .qty-btn:hover { background: rgba(254,229,0,0.2); }
+  .qty-num {
+    font-family: 'Black Han Sans', sans-serif; font-size: 18px;
+    color: var(--kakao); min-width: 24px; text-align: center;
+  }
+
+  .delete-btn {
+    background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: 16px; padding: 4px;
+    border-radius: 4px; transition: color 0.15s;
+  }
+  .delete-btn:hover { color: var(--red); }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; line-height: 1.6; }
+
+  .bottom-summary {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(135deg, var(--kakao-dark), #2d1515);
+    border-top: 2px solid var(--kakao);
+    padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 100;
+  }
+  .summary-left { font-size: 13px; color: var(--kakao); }
+  .summary-left strong { font-size: 20px; font-family: 'Black Han Sans', sans-serif; }
+  .export-btn {
+    background: var(--kakao); color: var(--kakao-dark);
+    border: none; border-radius: 10px; padding: 10px 18px;
+    font-family: 'Black Han Sans', sans-serif; font-size: 14px;
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+  }
+
+  .loading-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 200; align-items: center; justify-content: center; flex-direction: column; gap: 16px;
+  }
+  .loading-overlay.show { display: flex; }
+  .spinner {
+    width: 48px; height: 48px; border: 4px solid rgba(254,229,0,0.2);
+    border-top-color: var(--kakao); border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { color: var(--kakao); font-family: 'Black Han Sans', sans-serif; font-size: 18px; }
+  .step-dot {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,0.1); color: var(--muted);
+    font-size: 12px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; transition: all 0.3s;
+  }
+  .step-dot.active { background: var(--kakao); color: var(--kakao-dark); transform: scale(1.15); }
+  .step-dot.done { background: var(--green); color: #052e16; }
+
+  .toast {
+    position: fixed; top: 80px; left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--green); color: #052e16;
+    padding: 10px 20px; border-radius: 20px;
+    font-weight: 800; font-size: 13px;
+    opacity: 0; transition: all 0.3s; z-index: 300; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🛒</div>
+  <h1>공구 주문 정리</h1>
+</header>
+
+<div class="stats-bar">
+  <div class="stat">👥 참여 <span id="stat-people">0</span>명</div>
+  <div class="stat">📦 총 수량 <span id="stat-qty">0</span>개</div>
+</div>
+
+<div class="main">
+  <div class="input-section">
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-text" onclick="switchTab('text')">💬 직접 붙여넣기</button>
+      <button class="tab-btn" id="tab-file" onclick="switchTab('file')">📂 TXT 파일 올리기</button>
+    </div>
+
+    <div id="pane-text">
+      <textarea class="chat-input" id="chat-input" placeholder="카톡 대화 내용을 여기에 붙여넣으세요.
+
+예시:
+꿀단지4419
+한우
+꿀단지4419
+너비아니 3
+우령강된장2
+99"></textarea>
+      <div class="input-hint">📋 여러 명의 메시지를 한 번에 붙여넣어도 됩니다.</div>
+    </div>
+
+    <div id="pane-file" style="display:none">
+      <div class="file-upload-area" id="drop-zone">
+        <input type="file" accept=".txt" id="file-input" onchange="handleFile(this.files[0])">
+        <div class="file-upload-icon">📄</div>
+        <div class="file-upload-text">
+          <strong>카톡 대화 내보내기 TXT 파일</strong>을 여기에 끌어다 놓거나<br>탭해서 선택하세요
+        </div>
+      </div>
+      <div class="input-hint">💡 카카오톡 PC → 채팅방 우상단 메뉴 → <strong>대화 내보내기</strong>로 저장한 파일을 올려주세요</div>
+      <div id="file-status" style="display:none; margin-top:8px; font-size:13px; color:var(--kakao); font-weight:700;"></div>
+    </div>
+
+    <button class="parse-btn" id="parse-btn" onclick="parseOrders()">
+      <span>🤖</span> AI로 주문 자동 정리
+    </button>
+  </div>
+
+  <div class="orders-section">
+    <div class="section-header">
+      <div class="section-title">📋 주문 현황</div>
+      <button class="clear-btn" onclick="clearAll()">전체 삭제</button>
+    </div>
+    <div id="orders-list">
+      <div class="empty-state">
+        <div class="emoji">👆</div>
+        <p>카톡 메시지를 붙여넣거나<br>TXT 파일을 올리고 버튼을 눌러보세요!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-summary">
+  <div class="summary-left">총 <strong id="bottom-total">0</strong>개</div>
+  <div style="display:flex;gap:8px;">
+    <button class="export-btn" style="background:#1d6f42;color:#fff;" onclick="exportExcel()">📊 엑셀 저장</button>
+    <button class="export-btn" onclick="exportText()">📤 복사</button>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">AI가 주문을 분석 중...</div>
+  <div id="loading-steps" style="display:flex;gap:10px;margin-top:4px;">
+    <div class="step-dot" id="step1">1회</div>
+    <div class="step-dot" id="step2">2회</div>
+    <div class="step-dot" id="step3">3회</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+let orders = [];
+let currentTab = 'text';
+let fileContent = '';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-text').classList.toggle('active', tab === 'text');
+  document.getElementById('tab-file').classList.toggle('active', tab === 'file');
+  document.getElementById('pane-text').style.display = tab === 'text' ? '' : 'none';
+  document.getElementById('pane-file').style.display = tab === 'file' ? '' : 'none';
+}
+
+const dropZone = document.getElementById('drop-zone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+});
+
+function handleFile(file) {
+  if (!file || !file.name.endsWith('.txt')) { showToast('TXT 파일만 올려주세요!', '#f87171'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    fileContent = ev.target.result;
+    const lines = fileContent.split('\n').length;
+    const status = document.getElementById('file-status');
+    status.style.display = '';
+    status.textContent = `✅ "${file.name}" 로드 완료 (${lines}줄) — AI 정리 버튼을 눌러주세요`;
+    dropZone.style.borderColor = 'var(--green)';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+const SYSTEM_PROMPT = `너는 카카오톡 공동구매 오픈채팅방의 주문 메시지를 분석하는 전문가야.
+채팅 내용에서 아래 4가지를 추출해줘:
+- 고객명: 카카오톡 대화명(닉네임)
+- 항목: 고객이 작성한 문구 (숫자 제외한 텍스트 전체)
+- 수량: 문구 뒤에 오는 숫자. 숫자가 없으면 1로 처리
+- 날짜: 해당 메시지가 보내진 날짜 (카카오톡 날짜 구분선 기준, YYYY-MM-DD 형식)
+
+카카오톡 내보내기 TXT 예시:
+------------------ 2024년 1월 1일 ------------------
+[홍길동] [오전 9:30] 아메리카노 2
+[꿀단지4419] [오전 9:34] 한우
+------------------ 2024년 1월 2일 ------------------
+[꿀단지4419] [오전 9:35] 너비아니 3
+[진대구8285] [오전 9:36] 99
+
+파싱 결과 예시:
+- [홍길동] "아메리카노 2" → 고객명: 홍길동, 항목: 아메리카노, 수량: 2, 날짜: 2024-01-01
+- [꿀단지4419] "한우" → 고객명: 꿀단지4419, 항목: 한우, 수량: 1, 날짜: 2024-01-01
+- [꿀단지4419] "너비아니 3" → 고객명: 꿀단지4419, 항목: 너비아니, 수량: 3, 날짜: 2024-01-02
+- [진대구8285] "99" → 고객명: 진대구8285, 항목: (없음), 수량: 99, 날짜: 2024-01-02
+
+규칙:
+- 날짜 구분선("-- 2024년 1월 1일 --" 형태)을 보고 이후 메시지들의 날짜를 판단
+- TXT가 아닌 직접 붙여넣기라면 날짜 정보가 없으므로 날짜는 빈값("")으로
+- 메시지가 숫자만 있으면 항목은 빈값, 수량은 그 숫자
+- 문구 뒤 숫자가 수량 (예: "버터쿠키 2" → 항목: 버터쿠키, 수량: 2)
+- 숫자가 없으면 수량 1
+- 같은 닉네임이 같은 날짜에 같은 항목을 여러 번 보내면 수량 합산
+- 같은 닉네임이라도 다른 항목이면 별도 주문으로 처리
+- 상품 설명, 공지, 가격 안내 등 주문이 아닌 내용 무시
+- 시스템 메시지 무시
+
+반드시 JSON만 반환해. 다른 말 하지 마.
+형식: {"orders": [{"name": "고객명", "item": "항목", "qty": 숫자, "date": "YYYY-MM-DD"}]}`;
+
+async function callAI(text) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 2000,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: "user", content: `다음 카톡 내용에서 주문 정보를 추출해줘:\n\n${text.slice(0, 8000)}` }]
+    })
+  });
+  const data = await res.json();
+  const raw = data.content.map(i => i.text || '').join('');
+  return JSON.parse(raw.replace(/```json|```/g, '').trim());
+}
+
+function mergeResults(results) {
+  const allKeys = [...new Set(results.flatMap(r =>
+    r.orders.map(o => `${o.name}||${o.item || ''}||${o.date || ''}`)
+  ))];
+  return allKeys.map(key => {
+    const [name, item, date] = key.split('||');
+    const hits = results.filter(r =>
+      r.orders.some(o => o.name === name && (o.item || '') === item && (o.date || '') === date)
+    );
+    const qtys = hits.map(r =>
+      r.orders.find(o => o.name === name && (o.item || '') === item && (o.date || '') === date).qty
+    ).sort((a, b) => a - b);
+    return { name, item, date, qty: qtys[Math.floor(qtys.length / 2)], confirmed: hits.length === 3 };
+  });
+}
+
+function setStep(n) {
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById(`step${i}`).className =
+      'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+  }
+  document.getElementById('loading-text').textContent =
+    n <= 3 ? `AI 검증 중... (${n}/3회)` : '결과 교차검증 중...';
+}
+
+async function parseOrders() {
+  let text = '';
+  if (currentTab === 'text') {
+    text = document.getElementById('chat-input').value.trim();
+    if (!text) { showToast('메시지를 입력해주세요!', '#f87171'); return; }
+  } else {
+    if (!fileContent) { showToast('파일을 먼저 올려주세요!', '#f87171'); return; }
+    text = fileContent;
+  }
+
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('parse-btn').disabled = true;
+  for (let i = 1; i <= 3; i++) document.getElementById(`step${i}`).className = 'step-dot';
+
+  try {
+    const results = [];
+    for (let round = 1; round <= 3; round++) {
+      setStep(round);
+      results.push(await callAI(text));
+      await new Promise(r => setTimeout(r, 300));
+    }
+    setStep(4);
+    await new Promise(r => setTimeout(r, 400));
+    const finalOrders = mergeResults(results);
+
+    if (finalOrders.length > 0) {
+      finalOrders.forEach(o => {
+        const existing = orders.find(e => e.name === o.name && e.item === o.item && e.date === o.date);
+        if (existing) { existing.qty += o.qty; existing.confirmed = o.confirmed; }
+        else orders.push({ name: o.name, item: o.item || '', date: o.date || '', qty: o.qty, confirmed: o.confirmed });
+      });
+      renderOrders();
+      document.getElementById('chat-input').value = '';
+      fileContent = '';
+      document.getElementById('file-status').style.display = 'none';
+      dropZone.style.borderColor = '';
+      const bad = finalOrders.filter(o => !o.confirmed).length;
+      showToast(
+        bad > 0 ? `✅ ${finalOrders.length}건 완료 (⚠️ ${bad}건 재확인 필요)` : `✅ 3회 검증 완료! ${finalOrders.length}건 확인됨`,
+        bad > 0 ? '#f59e0b' : '#4ade80'
+      );
+    } else {
+      showToast('주문 내역을 찾을 수 없어요', '#f87171');
+    }
+  } catch (e) {
+    showToast('오류가 발생했어요. 다시 시도해주세요.', '#f87171');
+    console.error(e);
+  }
+  document.getElementById('loading').classList.remove('show');
+  document.getElementById('parse-btn').disabled = false;
+}
+
+function renderOrders() {
+  const list = document.getElementById('orders-list');
+  if (orders.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="emoji">👆</div><p>카톡 메시지를 붙여넣거나<br>TXT 파일을 올리고 버튼을 눌러보세요!</p></div>`;
+    updateStats(); return;
+  }
+  list.innerHTML = orders.map((o, i) => `
+    <div class="order-card" style="${o.confirmed === false ? 'border-color:rgba(245,158,11,0.4);' : ''}">
+      <div class="order-num">${i + 1}</div>
+      <div class="order-info">
+        <div class="order-name">${o.name}${
+          o.confirmed === false
+            ? ' <span style="font-size:10px;background:rgba(245,158,11,0.2);color:#f59e0b;padding:2px 6px;border-radius:4px;font-weight:700;">⚠️ 재확인</span>'
+            : o.confirmed === true
+            ? ' <span style="font-size:10px;background:rgba(74,222,128,0.15);color:#4ade80;padding:2px 6px;border-radius:4px;font-weight:700;">✓ 검증됨</span>'
+            : ''
+        }</div>
+        <div class="order-detail">${o.item || '(항목 없음)'} × ${o.qty}개</div>
+        ${o.date ? `<div class="order-date">📅 ${o.date}</div>` : ''}
+      </div>
+      <div class="order-qty">
+        <button class="qty-btn" onclick="changeQty(${i}, -1)">−</button>
+        <div class="qty-num">${o.qty}</div>
+        <button class="qty-btn" onclick="changeQty(${i}, 1)">+</button>
+      </div>
+      <button class="delete-btn" onclick="deleteOrder(${i})">✕</button>
+    </div>
+  `).join('');
+  updateStats();
+}
+
+function changeQty(idx, delta) { orders[idx].qty = Math.max(1, orders[idx].qty + delta); renderOrders(); }
+function deleteOrder(idx) { orders.splice(idx, 1); renderOrders(); showToast('삭제했어요'); }
+function clearAll() {
+  if (!orders.length) return;
+  if (!confirm('주문 내역을 전부 삭제할까요?')) return;
+  orders = []; renderOrders();
+}
+
+function updateStats() {
+  const totalQty = orders.reduce((s, o) => s + o.qty, 0);
+  document.getElementById('stat-people').textContent = orders.length;
+  document.getElementById('stat-qty').textContent = totalQty;
+  document.getElementById('bottom-total').textContent = totalQty;
+}
+
+function exportExcel() {
+  if (!orders.length) { showToast('주문 내역이 없어요', '#f87171'); return; }
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const rows = orders.map((o, i) => ({
+    '번호': i + 1, '주문날짜': o.date || '', '고객명': o.name,
+    '항목': o.item || '', '수량': o.qty,
+    '검증상태': o.confirmed === true ? '✓ 검증됨' : o.confirmed === false ? '⚠️ 재확인' : '-'
+  }));
+  const totalQty = orders.reduce((s, o) => s + o.qty, 0);
+  rows.push({ '번호': '', '주문날짜': '', '고객명': '합계', '항목': '', '수량': totalQty, '검증상태': `총 ${orders.length}명` });
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{ wch: 6 }, { wch: 14 }, { wch: 18 }, { wch: 24 }, { wch: 8 }, { wch: 12 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '주문현황');
+  XLSX.writeFile(wb, `공구주문_${dateStr}.xlsx`);
+  showToast('📊 엑셀 파일 저장됐어요!');
+}
+
+function exportText() {
+  if (!orders.length) { showToast('주문 내역이 없어요', '#f87171'); return; }
+  const totalQty = orders.reduce((s, o) => s + o.qty, 0);
+  let text = `📋 공동구매 주문 현황\n${'─'.repeat(30)}\n`;
+  orders.forEach((o, i) => { text += `${i+1}. ${o.date || '-'} / ${o.name} / ${o.item || '-'} / ${o.qty}개\n`; });
+  text += `${'─'.repeat(30)}\n👥 총 ${orders.length}명 / 📦 ${totalQty}개`;
+  navigator.clipboard.writeText(text).then(() => showToast('📋 클립보드에 복사했어요!')).catch(() => alert(text));
+}
+
+function showToast(msg, color) {
+  color = color || '#4ade80';
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = color;
+  t.style.color = color === '#4ade80' ? '#052e16' : '#fff';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
