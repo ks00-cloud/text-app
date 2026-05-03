@@ -6,192 +6,155 @@
 <title>공구 주문 정리</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Black+Han+Sans&display=swap');
-
   :root {
-    --kakao: #FEE500;
-    --kakao-dark: #3A1D1D;
-    --bg: #1a1a2e;
-    --surface: #16213e;
-    --green: #4ade80;
-    --red: #f87171;
-    --text: #e2e8f0;
-    --muted: #94a3b8;
+    --kakao: #FEE500; --kakao-dark: #3A1D1D;
+    --bg: #1a1a2e; --surface: #16213e;
+    --green: #4ade80; --red: #f87171;
+    --text: #e2e8f0; --muted: #94a3b8;
+    --orange: #f59e0b;
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Nanum Gothic', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Nanum Gothic',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
   header {
-    background: var(--kakao); padding: 16px 20px;
-    display: flex; align-items: center; gap: 12px;
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 4px 20px rgba(254,229,0,0.3);
+    background:var(--kakao); padding:14px 20px;
+    display:flex; align-items:center; gap:12px;
+    position:sticky; top:0; z-index:100;
+    box-shadow:0 4px 20px rgba(254,229,0,0.3);
   }
-  header .logo {
-    width: 36px; height: 36px; background: var(--kakao-dark);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px;
-  }
-  header h1 { font-family: 'Black Han Sans', sans-serif; font-size: 18px; color: var(--kakao-dark); flex: 1; }
+  header .logo { width:34px; height:34px; background:var(--kakao-dark); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:17px; }
+  header h1 { font-family:'Black Han Sans',sans-serif; font-size:17px; color:var(--kakao-dark); flex:1; }
 
   .stats-bar {
-    background: var(--kakao-dark); color: var(--kakao);
-    padding: 10px 20px; display: flex; gap: 20px;
-    font-size: 13px; font-weight: 700; overflow-x: auto;
+    background:var(--kakao-dark); color:var(--kakao);
+    padding:8px 20px; display:flex; gap:20px; font-size:13px; font-weight:700; overflow-x:auto;
   }
-  .stat { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-  .stat span { color: white; font-weight: 800; }
+  .stat { display:flex; align-items:center; gap:5px; white-space:nowrap; }
+  .stat span { color:white; font-weight:800; }
 
-  .main { padding: 16px; max-width: 800px; margin: 0 auto; }
+  .main { padding:14px; max-width:800px; margin:0 auto; }
 
-  .input-section {
-    background: var(--surface); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px; padding: 16px; margin-bottom: 16px;
-  }
-
-  .tab-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  /* 입력 */
+  .input-section { background:var(--surface); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:14px; margin-bottom:14px; }
+  .tab-row { display:flex; gap:8px; margin-bottom:12px; }
   .tab-btn {
-    flex: 1; padding: 9px; border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.12); background: transparent;
-    color: var(--muted); font-family: 'Nanum Gothic', sans-serif;
-    font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    flex:1; padding:9px; border-radius:8px;
+    border:1px solid rgba(255,255,255,0.12); background:transparent;
+    color:var(--muted); font-family:'Nanum Gothic',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s;
   }
-  .tab-btn.active { background: var(--kakao); color: var(--kakao-dark); border-color: var(--kakao); }
-
+  .tab-btn.active { background:var(--kakao); color:var(--kakao-dark); border-color:var(--kakao); }
   .chat-input {
-    width: 100%; background: var(--bg); border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 10px; padding: 12px; color: var(--text);
-    font-family: 'Nanum Gothic', sans-serif; font-size: 14px;
-    resize: vertical; min-height: 100px; transition: border-color 0.2s;
+    width:100%; background:var(--bg); border:1px solid rgba(255,255,255,0.15);
+    border-radius:10px; padding:12px; color:var(--text);
+    font-family:'Nanum Gothic',sans-serif; font-size:14px; resize:vertical; min-height:100px;
   }
-  .chat-input:focus { outline: none; border-color: var(--kakao); }
-  .chat-input::placeholder { color: var(--muted); }
-  .input-hint { font-size: 11px; color: var(--muted); margin-top: 6px; }
-
+  .chat-input:focus { outline:none; border-color:var(--kakao); }
+  .chat-input::placeholder { color:var(--muted); }
+  .input-hint { font-size:11px; color:var(--muted); margin-top:6px; }
   .file-upload-area {
-    border: 2px dashed rgba(254,229,0,0.4); border-radius: 12px;
-    padding: 20px; text-align: center; cursor: pointer;
-    transition: all 0.2s; margin-bottom: 10px;
-    background: rgba(254,229,0,0.03); position: relative;
+    border:2px dashed rgba(254,229,0,0.4); border-radius:12px; padding:20px;
+    text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:10px;
+    background:rgba(254,229,0,0.03); position:relative;
   }
-  .file-upload-area:hover, .file-upload-area.drag-over {
-    border-color: var(--kakao); background: rgba(254,229,0,0.08);
-  }
-  .file-upload-area input[type=file] {
-    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-  }
-  .file-upload-icon { font-size: 28px; margin-bottom: 6px; }
-  .file-upload-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
-  .file-upload-text strong { color: var(--kakao); }
-
+  .file-upload-area:hover, .file-upload-area.drag-over { border-color:var(--kakao); background:rgba(254,229,0,0.08); }
+  .file-upload-area input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+  .file-upload-icon { font-size:26px; margin-bottom:6px; }
+  .file-upload-text { font-size:13px; color:var(--muted); line-height:1.5; }
+  .file-upload-text strong { color:var(--kakao); }
   .parse-btn {
-    width: 100%; margin-top: 10px; background: var(--kakao); color: var(--kakao-dark);
-    border: none; border-radius: 10px; padding: 14px;
-    font-family: 'Black Han Sans', sans-serif; font-size: 16px; cursor: pointer;
-    transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+    width:100%; margin-top:10px; background:var(--kakao); color:var(--kakao-dark);
+    border:none; border-radius:10px; padding:13px;
+    font-family:'Black Han Sans',sans-serif; font-size:16px; cursor:pointer;
+    transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;
   }
-  .parse-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(254,229,0,0.4); }
-  .parse-btn:active { transform: translateY(0); }
-  .parse-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .parse-btn:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(254,229,0,0.4); }
+  .parse-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 
-  .orders-section { margin-bottom: 90px; }
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .section-title { font-family: 'Black Han Sans', sans-serif; font-size: 16px; color: var(--kakao); }
+  /* 결과 뷰 탭 */
+  .view-tabs { display:flex; gap:6px; margin-bottom:12px; }
+  .view-tab {
+    padding:7px 14px; border-radius:20px; border:1px solid rgba(255,255,255,0.15);
+    background:transparent; color:var(--muted); font-family:'Nanum Gothic',sans-serif;
+    font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; white-space:nowrap;
+  }
+  .view-tab.active { background:var(--kakao); color:var(--kakao-dark); border-color:var(--kakao); }
+
+  .orders-section { margin-bottom:90px; }
+  .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .section-title { font-family:'Black Han Sans',sans-serif; font-size:15px; color:var(--kakao); }
   .clear-btn {
-    background: rgba(248,113,113,0.15); color: var(--red);
-    border: 1px solid rgba(248,113,113,0.3); border-radius: 8px;
-    padding: 6px 12px; font-size: 12px; cursor: pointer;
-    font-family: 'Nanum Gothic', sans-serif; font-weight: 700;
+    background:rgba(248,113,113,0.15); color:var(--red);
+    border:1px solid rgba(248,113,113,0.3); border-radius:8px;
+    padding:5px 12px; font-size:12px; cursor:pointer;
+    font-family:'Nanum Gothic',sans-serif; font-weight:700;
   }
 
-  .order-card {
-    background: var(--surface); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px; padding: 14px; margin-bottom: 8px;
-    display: flex; align-items: center; gap: 12px;
-    animation: slideIn 0.3s ease; position: relative; overflow: hidden;
+  /* 주문 행 - 텍스트형 */
+  .order-row {
+    background:var(--surface); border-left:3px solid var(--kakao);
+    border-radius:0 10px 10px 0; padding:10px 14px; margin-bottom:6px;
+    display:flex; align-items:center; gap:10px;
+    animation:slideIn 0.25s ease;
   }
-  .order-card::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-    width: 3px; background: var(--kakao); border-radius: 3px 0 0 3px;
+  .order-row.unconfirmed { border-left-color:var(--orange); }
+  @keyframes slideIn { from{opacity:0;transform:translateY(-6px);} to{opacity:1;transform:translateY(0);} }
+  .row-num { font-size:11px; color:var(--muted); min-width:20px; }
+  .row-body { flex:1; font-size:14px; line-height:1.5; }
+  .row-name { font-weight:800; color:var(--text); }
+  .row-item { color:var(--muted); font-size:13px; }
+  .row-badge {
+    font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700; flex-shrink:0;
   }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .badge-ok { background:rgba(74,222,128,0.15); color:var(--green); }
+  .badge-warn { background:rgba(245,158,11,0.2); color:var(--orange); }
+  .row-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:14px; padding:2px 4px; border-radius:4px; }
+  .row-del:hover { color:var(--red); }
 
-  .order-num {
-    width: 28px; height: 28px; background: var(--kakao); color: var(--kakao-dark);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 800; flex-shrink: 0;
+  /* 그룹 카드 */
+  .group-card { background:var(--surface); border-radius:12px; margin-bottom:10px; overflow:hidden; }
+  .group-header {
+    padding:12px 14px; display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid rgba(255,255,255,0.06);
   }
-  .order-info { flex: 1; min-width: 0; }
-  .order-name { font-weight: 800; font-size: 15px; margin-bottom: 2px; }
-  .order-detail { font-size: 12px; color: var(--muted); }
-  .order-date { font-size: 11px; color: var(--kakao); opacity: 0.8; margin-top: 2px; }
+  .group-title { font-weight:800; font-size:14px; }
+  .group-count { font-size:12px; color:var(--kakao); font-weight:700; }
+  .group-rows { padding:8px 14px 12px; }
+  .group-row { font-size:13px; color:var(--muted); padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+  .group-row:last-child { border-bottom:none; }
+  .group-row strong { color:var(--text); }
 
-  .order-qty { display: flex; align-items: center; gap: 8px; }
-  .qty-btn {
-    width: 28px; height: 28px; background: rgba(255,255,255,0.1);
-    border: none; border-radius: 6px; color: var(--text); font-size: 16px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;
-  }
-  .qty-btn:hover { background: rgba(254,229,0,0.2); }
-  .qty-num {
-    font-family: 'Black Han Sans', sans-serif; font-size: 18px;
-    color: var(--kakao); min-width: 24px; text-align: center;
-  }
-
-  .delete-btn {
-    background: none; border: none; color: var(--muted);
-    cursor: pointer; font-size: 16px; padding: 4px;
-    border-radius: 4px; transition: color 0.15s;
-  }
-  .delete-btn:hover { color: var(--red); }
-
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
-  .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
-  .empty-state p { font-size: 14px; line-height: 1.6; }
-
+  /* 하단 */
   .bottom-summary {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(135deg, var(--kakao-dark), #2d1515);
-    border-top: 2px solid var(--kakao);
-    padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 100;
+    position:fixed; bottom:0; left:0; right:0;
+    background:linear-gradient(135deg,var(--kakao-dark),#2d1515);
+    border-top:2px solid var(--kakao);
+    padding:12px 20px; display:flex; align-items:center; justify-content:space-between; z-index:100;
   }
-  .summary-left { font-size: 13px; color: var(--kakao); }
-  .summary-left strong { font-size: 20px; font-family: 'Black Han Sans', sans-serif; }
+  .summary-left { font-size:13px; color:var(--kakao); }
+  .summary-left strong { font-size:19px; font-family:'Black Han Sans',sans-serif; }
   .export-btn {
-    background: var(--kakao); color: var(--kakao-dark);
-    border: none; border-radius: 10px; padding: 10px 18px;
-    font-family: 'Black Han Sans', sans-serif; font-size: 14px;
-    cursor: pointer; display: flex; align-items: center; gap: 6px;
+    background:var(--kakao); color:var(--kakao-dark);
+    border:none; border-radius:10px; padding:9px 16px;
+    font-family:'Black Han Sans',sans-serif; font-size:13px; cursor:pointer;
+    display:flex; align-items:center; gap:5px;
   }
 
-  .loading-overlay {
-    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    z-index: 200; align-items: center; justify-content: center; flex-direction: column; gap: 16px;
-  }
-  .loading-overlay.show { display: flex; }
-  .spinner {
-    width: 48px; height: 48px; border: 4px solid rgba(254,229,0,0.2);
-    border-top-color: var(--kakao); border-radius: 50%; animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { color: var(--kakao); font-family: 'Black Han Sans', sans-serif; font-size: 18px; }
-  .step-dot {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: rgba(255,255,255,0.1); color: var(--muted);
-    font-size: 12px; font-weight: 800;
-    display: flex; align-items: center; justify-content: center; transition: all 0.3s;
-  }
-  .step-dot.active { background: var(--kakao); color: var(--kakao-dark); transform: scale(1.15); }
-  .step-dot.done { background: var(--green); color: #052e16; }
+  /* 로딩 */
+  .loading-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200; align-items:center; justify-content:center; flex-direction:column; gap:14px; }
+  .loading-overlay.show { display:flex; }
+  .spinner { width:44px; height:44px; border:4px solid rgba(254,229,0,0.2); border-top-color:var(--kakao); border-radius:50%; animation:spin 0.8s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg);} }
+  .loading-text { color:var(--kakao); font-family:'Black Han Sans',sans-serif; font-size:17px; }
+  .step-dot { width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.1); color:var(--muted); font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; transition:all 0.3s; }
+  .step-dot.active { background:var(--kakao); color:var(--kakao-dark); transform:scale(1.15); }
+  .step-dot.done { background:var(--green); color:#052e16; }
 
-  .toast {
-    position: fixed; top: 80px; left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    background: var(--green); color: #052e16;
-    padding: 10px 20px; border-radius: 20px;
-    font-weight: 800; font-size: 13px;
-    opacity: 0; transition: all 0.3s; z-index: 300; white-space: nowrap;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast { position:fixed; top:76px; left:50%; transform:translateX(-50%) translateY(-20px); background:var(--green); color:#052e16; padding:9px 18px; border-radius:20px; font-weight:800; font-size:13px; opacity:0; transition:all 0.3s; z-index:300; white-space:nowrap; }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .empty-state { text-align:center; padding:40px 20px; color:var(--muted); }
+  .empty-state .emoji { font-size:44px; margin-bottom:10px; }
+  .empty-state p { font-size:14px; line-height:1.6; }
 </style>
 </head>
 <body>
@@ -202,73 +165,74 @@
 </header>
 
 <div class="stats-bar">
-  <div class="stat">👥 참여 <span id="stat-people">0</span>명</div>
-  <div class="stat">📦 총 수량 <span id="stat-qty">0</span>개</div>
+  <div class="stat">👥 <span id="stat-people">0</span>명</div>
+  <div class="stat">📦 총 <span id="stat-qty">0</span>개</div>
+  <div class="stat">🗂 항목 <span id="stat-items">0</span>종</div>
 </div>
 
 <div class="main">
+  <!-- 입력 -->
   <div class="input-section">
     <div class="tab-row">
-      <button class="tab-btn active" id="tab-text" onclick="switchTab('text')">💬 직접 붙여넣기</button>
-      <button class="tab-btn" id="tab-file" onclick="switchTab('file')">📂 TXT 파일 올리기</button>
+      <button class="tab-btn active" id="tab-text" onclick="switchInput('text')">💬 직접 붙여넣기</button>
+      <button class="tab-btn" id="tab-file" onclick="switchInput('file')">📂 TXT 파일</button>
     </div>
-
     <div id="pane-text">
       <textarea class="chat-input" id="chat-input" placeholder="카톡 대화 내용을 여기에 붙여넣으세요.
 
 예시:
-꿀단지4419
-한우
-꿀단지4419
-너비아니 3
-우령강된장2
-99"></textarea>
+[아기천사4672] [오전 11:06] 서리태콩물1, 우뭇콩물1
+[라이언1460] [오전 11:07] 버터쿠키1
+[모모야1212] [오전 11:11] 한우너비아니2
+한돈너비아니2"></textarea>
       <div class="input-hint">📋 여러 명의 메시지를 한 번에 붙여넣어도 됩니다.</div>
     </div>
-
     <div id="pane-file" style="display:none">
       <div class="file-upload-area" id="drop-zone">
         <input type="file" accept=".txt" id="file-input" onchange="handleFile(this.files[0])">
         <div class="file-upload-icon">📄</div>
-        <div class="file-upload-text">
-          <strong>카톡 대화 내보내기 TXT 파일</strong>을 여기에 끌어다 놓거나<br>탭해서 선택하세요
-        </div>
+        <div class="file-upload-text"><strong>카톡 대화 내보내기 TXT</strong>를 끌어다 놓거나 탭해서 선택</div>
       </div>
-      <div class="input-hint">💡 카카오톡 PC → 채팅방 우상단 메뉴 → <strong>대화 내보내기</strong>로 저장한 파일을 올려주세요</div>
-      <div id="file-status" style="display:none; margin-top:8px; font-size:13px; color:var(--kakao); font-weight:700;"></div>
+      <div class="input-hint">💡 카카오톡 PC → 채팅방 우상단 ☰ → 대화 내보내기</div>
+      <div id="file-status" style="display:none;margin-top:8px;font-size:13px;color:var(--kakao);font-weight:700;"></div>
     </div>
-
     <button class="parse-btn" id="parse-btn" onclick="parseOrders()">
       <span>🤖</span> AI로 주문 자동 정리
     </button>
   </div>
 
+  <!-- 결과 -->
   <div class="orders-section">
     <div class="section-header">
       <div class="section-title">📋 주문 현황</div>
       <button class="clear-btn" onclick="clearAll()">전체 삭제</button>
     </div>
-    <div id="orders-list">
-      <div class="empty-state">
-        <div class="emoji">👆</div>
-        <p>카톡 메시지를 붙여넣거나<br>TXT 파일을 올리고 버튼을 눌러보세요!</p>
-      </div>
+
+    <!-- 뷰 탭 -->
+    <div class="view-tabs">
+      <button class="view-tab active" id="vtab-list" onclick="switchView('list')">📝 전체 목록</button>
+      <button class="view-tab" id="vtab-item" onclick="switchView('item')">🗂 항목별</button>
+      <button class="view-tab" id="vtab-name" onclick="switchView('name')">👤 닉네임별</button>
     </div>
+
+    <div id="view-list"></div>
+    <div id="view-item" style="display:none"></div>
+    <div id="view-name" style="display:none"></div>
   </div>
 </div>
 
 <div class="bottom-summary">
   <div class="summary-left">총 <strong id="bottom-total">0</strong>개</div>
   <div style="display:flex;gap:8px;">
-    <button class="export-btn" style="background:#1d6f42;color:#fff;" onclick="exportExcel()">📊 엑셀 저장</button>
+    <button class="export-btn" style="background:#1d6f42;color:#fff;" onclick="exportExcel()">📊 엑셀</button>
     <button class="export-btn" onclick="exportText()">📤 복사</button>
   </div>
 </div>
 
 <div class="loading-overlay" id="loading">
   <div class="spinner"></div>
-  <div class="loading-text" id="loading-text">AI가 주문을 분석 중...</div>
-  <div id="loading-steps" style="display:flex;gap:10px;margin-top:4px;">
+  <div class="loading-text" id="loading-text">AI 분석 중...</div>
+  <div style="display:flex;gap:10px;margin-top:4px;">
     <div class="step-dot" id="step1">1회</div>
     <div class="step-dot" id="step2">2회</div>
     <div class="step-dot" id="step3">3회</div>
@@ -280,40 +244,49 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 let orders = [];
-let currentTab = 'text';
+let currentInput = 'text';
+let currentView = 'list';
 let fileContent = '';
 
-function switchTab(tab) {
-  currentTab = tab;
-  document.getElementById('tab-text').classList.toggle('active', tab === 'text');
-  document.getElementById('tab-file').classList.toggle('active', tab === 'file');
-  document.getElementById('pane-text').style.display = tab === 'text' ? '' : 'none';
-  document.getElementById('pane-file').style.display = tab === 'file' ? '' : 'none';
+/* ── 입력 탭 ── */
+function switchInput(tab) {
+  currentInput = tab;
+  document.getElementById('tab-text').classList.toggle('active', tab==='text');
+  document.getElementById('tab-file').classList.toggle('active', tab==='file');
+  document.getElementById('pane-text').style.display = tab==='text' ? '' : 'none';
+  document.getElementById('pane-file').style.display = tab==='file' ? '' : 'none';
 }
 
+/* ── 뷰 탭 ── */
+function switchView(v) {
+  currentView = v;
+  ['list','item','name'].forEach(x => {
+    document.getElementById('vtab-'+x).classList.toggle('active', x===v);
+    document.getElementById('view-'+x).style.display = x===v ? '' : 'none';
+  });
+  renderAll();
+}
+
+/* ── 파일 ── */
 const dropZone = document.getElementById('drop-zone');
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault(); dropZone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file) handleFile(file);
-});
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); handleFile(e.dataTransfer.files[0]); });
 
 function handleFile(file) {
   if (!file || !file.name.endsWith('.txt')) { showToast('TXT 파일만 올려주세요!', '#f87171'); return; }
   const reader = new FileReader();
   reader.onload = ev => {
     fileContent = ev.target.result;
-    const lines = fileContent.split('\n').length;
     const status = document.getElementById('file-status');
     status.style.display = '';
-    status.textContent = `✅ "${file.name}" 로드 완료 (${lines}줄) — AI 정리 버튼을 눌러주세요`;
+    status.textContent = `✅ "${file.name}" 로드 완료 (${fileContent.split('\n').length}줄)`;
     dropZone.style.borderColor = 'var(--green)';
   };
   reader.readAsText(file, 'UTF-8');
 }
 
+/* ── AI 프롬프트 ── */
 const SYSTEM_PROMPT = `너는 카카오톡 공동구매 오픈채팅방의 주문 메시지를 분석하는 전문가야.
 채팅 내용에서 주문 정보만 추출해줘.
 
@@ -331,17 +304,11 @@ const SYSTEM_PROMPT = `너는 카카오톡 공동구매 오픈채팅방의 주�
 파싱 규칙:
 1. [닉네임] [시간] 으로 시작하는 줄이 주문자 메시지임
 2. 주문자 메시지 바로 다음 줄에 [닉네임]이 없으면 같은 사람의 추가 주문임
-   예: [모모야1212] 다음줄 "한돈너비아니2" → 모모야1212의 추가 주문
-3. 항목: 메시지에서 숫자/쉼표 제외한 상품명
+3. 항목: 메시지에서 숫자/쉼표 제외한 상품명 (공백 정리)
 4. 수량: 상품명 바로 뒤 숫자. 없으면 1
 5. 쉼표로 여러 상품 나열하면 각각 별도 주문으로 처리
-   예: "서리태콩물1, 우뭇콩물1" → 두 개의 주문
 6. [닉네임][시간] 없는 줄은 공지/광고이므로 무시
 7. 날짜 구분선에서 날짜 추출 (YYYY-MM-DD), 없으면 빈값
-
-파싱 결과 예시:
-- [아기천사4672] "서리태콩물1, 우뭇콩물1, 라탄베이지 1" → 3건: {서리태콩물,1}, {우뭇콩물,1}, {라탄베이지,1}
-- [모모야1212] "한우너비아니2" + 다음줄 "한돈너비아니2" → 2건: {한우너비아니,2}, {한돈너비아니,2}
 
 반드시 JSON만 반환해. 다른 말 하지 마.
 형식: {"orders": [{"name": "닉네임", "item": "항목", "qty": 숫자, "date": "YYYY-MM-DD"}]}`;
@@ -363,44 +330,38 @@ async function callAI(text) {
     })
   });
   const data = await res.json();
-  if (!data.content || !data.content.length) throw new Error('API 응답 없음');
-  const raw = data.content.map(i => i.text || '').join('');
-  const clean = raw.replace(/```json|```/g, '').trim();
-  const parsed = JSON.parse(clean);
-  if (!parsed.orders || !Array.isArray(parsed.orders)) throw new Error('orders 형식 오류');
+  if (!data.content?.length) throw new Error('API 응답 없음');
+  const raw = data.content.map(i => i.text||'').join('');
+  const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+  if (!Array.isArray(parsed.orders)) throw new Error('형식 오류');
   return parsed;
 }
 
 function mergeResults(results) {
-  const validResults = results.filter(r => r && Array.isArray(r.orders) && r.orders.length > 0);
-  if (validResults.length === 0) return [];
-  const allKeys = [...new Set(validResults.flatMap(r =>
-    r.orders.map(o => `${o.name}||${o.item || ''}||${o.date || ''}`)
+  const valid = results.filter(r => r?.orders?.length > 0);
+  if (!valid.length) return [];
+  const allKeys = [...new Set(valid.flatMap(r =>
+    r.orders.map(o => `${o.name}||${o.item||''}||${o.date||''}`)
   ))];
   return allKeys.map(key => {
     const [name, item, date] = key.split('||');
-    const hits = validResults.filter(r =>
-      r.orders.some(o => o.name === name && (o.item || '') === item && (o.date || '') === date)
-    );
-    const qtys = hits.map(r =>
-      r.orders.find(o => o.name === name && (o.item || '') === item && (o.date || '') === date).qty
-    ).sort((a, b) => a - b);
-    return { name, item, date, qty: qtys[Math.floor(qtys.length / 2)], confirmed: hits.length === results.length };
+    const hits = valid.filter(r => r.orders.some(o => o.name===name && (o.item||'')===item && (o.date||'')===date));
+    const qtys = hits.map(r => r.orders.find(o => o.name===name && (o.item||'')===item && (o.date||'')===date).qty).sort((a,b)=>a-b);
+    return { name, item, date, qty: qtys[Math.floor(qtys.length/2)], confirmed: hits.length===results.length };
   });
 }
 
 function setStep(n) {
-  for (let i = 1; i <= 3; i++) {
-    document.getElementById(`step${i}`).className =
-      'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+  for (let i=1;i<=3;i++) {
+    document.getElementById(`step${i}`).className = 'step-dot'+(i<n?' done':i===n?' active':'');
   }
-  document.getElementById('loading-text').textContent =
-    n <= 3 ? `AI 검증 중... (${n}/3회)` : '결과 교차검증 중...';
+  document.getElementById('loading-text').textContent = n<=3 ? `AI 검증 중... (${n}/3회)` : '교차검증 중...';
 }
 
+/* ── 메인 파싱 ── */
 async function parseOrders() {
   let text = '';
-  if (currentTab === 'text') {
+  if (currentInput==='text') {
     text = document.getElementById('chat-input').value.trim();
     if (!text) { showToast('메시지를 입력해주세요!', '#f87171'); return; }
   } else {
@@ -410,134 +371,166 @@ async function parseOrders() {
 
   document.getElementById('loading').classList.add('show');
   document.getElementById('parse-btn').disabled = true;
-  for (let i = 1; i <= 3; i++) document.getElementById(`step${i}`).className = 'step-dot';
+  for (let i=1;i<=3;i++) document.getElementById(`step${i}`).className='step-dot';
 
   try {
     const results = [];
-    for (let round = 1; round <= 3; round++) {
+    for (let round=1;round<=3;round++) {
       setStep(round);
-      try {
-        const parsed = await callAI(text);
-        results.push(parsed);
-      } catch (e) {
-        console.warn(`${round}회차 실패:`, e);
-        results.push({ orders: [] });
-      }
-      await new Promise(r => setTimeout(r, 300));
+      try { results.push(await callAI(text)); }
+      catch(e) { console.warn(`${round}회 실패`,e); results.push({orders:[]}); }
+      await new Promise(r=>setTimeout(r,300));
     }
     setStep(4);
-    await new Promise(r => setTimeout(r, 400));
-    const finalOrders = mergeResults(results);
+    await new Promise(r=>setTimeout(r,400));
+    const final = mergeResults(results);
 
-    if (finalOrders.length > 0) {
-      finalOrders.forEach(o => {
-        const existing = orders.find(e => e.name === o.name && e.item === o.item && e.date === o.date);
-        if (existing) { existing.qty += o.qty; existing.confirmed = o.confirmed; }
-        else orders.push({ name: o.name, item: o.item || '', date: o.date || '', qty: o.qty, confirmed: o.confirmed });
+    if (final.length > 0) {
+      final.forEach(o => {
+        const ex = orders.find(e => e.name===o.name && e.item===o.item && e.date===o.date);
+        if (ex) { ex.qty+=o.qty; ex.confirmed=o.confirmed; }
+        else orders.push({ name:o.name, item:o.item||'', date:o.date||'', qty:o.qty, confirmed:o.confirmed });
       });
-      renderOrders();
-      document.getElementById('chat-input').value = '';
-      fileContent = '';
-      document.getElementById('file-status').style.display = 'none';
-      dropZone.style.borderColor = '';
-      const bad = finalOrders.filter(o => !o.confirmed).length;
-      showToast(
-        bad > 0 ? `✅ ${finalOrders.length}건 완료 (⚠️ ${bad}건 재확인 필요)` : `✅ 3회 검증 완료! ${finalOrders.length}건 확인됨`,
-        bad > 0 ? '#f59e0b' : '#4ade80'
-      );
+      renderAll();
+      document.getElementById('chat-input').value='';
+      fileContent='';
+      document.getElementById('file-status').style.display='none';
+      dropZone.style.borderColor='';
+      const bad = final.filter(o=>!o.confirmed).length;
+      showToast(bad>0 ? `✅ ${final.length}건 (⚠️ ${bad}건 재확인)` : `✅ 3회 검증 완료! ${final.length}건`, bad>0?'#f59e0b':'#4ade80');
     } else {
       showToast('주문 내역을 찾을 수 없어요', '#f87171');
     }
-  } catch (e) {
-    showToast('오류가 발생했어요. 다시 시도해주세요.', '#f87171');
+  } catch(e) {
+    showToast('오류가 발생했어요', '#f87171');
     console.error(e);
   }
   document.getElementById('loading').classList.remove('show');
-  document.getElementById('parse-btn').disabled = false;
+  document.getElementById('parse-btn').disabled=false;
 }
 
-function renderOrders() {
-  const list = document.getElementById('orders-list');
-  if (orders.length === 0) {
-    list.innerHTML = `<div class="empty-state"><div class="emoji">👆</div><p>카톡 메시지를 붙여넣거나<br>TXT 파일을 올리고 버튼을 눌러보세요!</p></div>`;
-    updateStats(); return;
-  }
-  list.innerHTML = orders.map((o, i) => `
-    <div class="order-card" style="${o.confirmed === false ? 'border-color:rgba(245,158,11,0.4);' : ''}">
-      <div class="order-num">${i + 1}</div>
-      <div class="order-info">
-        <div class="order-name">${o.name}${
-          o.confirmed === false
-            ? ' <span style="font-size:10px;background:rgba(245,158,11,0.2);color:#f59e0b;padding:2px 6px;border-radius:4px;font-weight:700;">⚠️ 재확인</span>'
-            : o.confirmed === true
-            ? ' <span style="font-size:10px;background:rgba(74,222,128,0.15);color:#4ade80;padding:2px 6px;border-radius:4px;font-weight:700;">✓ 검증됨</span>'
-            : ''
-        }</div>
-        <div class="order-detail">${o.item || '(항목 없음)'} × ${o.qty}개</div>
-        ${o.date ? `<div class="order-date">📅 ${o.date}</div>` : ''}
-      </div>
-      <div class="order-qty">
-        <button class="qty-btn" onclick="changeQty(${i}, -1)">−</button>
-        <div class="qty-num">${o.qty}</div>
-        <button class="qty-btn" onclick="changeQty(${i}, 1)">+</button>
-      </div>
-      <button class="delete-btn" onclick="deleteOrder(${i})">✕</button>
-    </div>
-  `).join('');
+/* ── 렌더링 ── */
+function renderAll() {
+  renderList();
+  renderByItem();
+  renderByName();
   updateStats();
 }
 
-function changeQty(idx, delta) { orders[idx].qty = Math.max(1, orders[idx].qty + delta); renderOrders(); }
-function deleteOrder(idx) { orders.splice(idx, 1); renderOrders(); showToast('삭제했어요'); }
-function clearAll() {
-  if (!orders.length) return;
-  if (!confirm('주문 내역을 전부 삭제할까요?')) return;
-  orders = []; renderOrders();
+function renderList() {
+  const el = document.getElementById('view-list');
+  if (!orders.length) {
+    el.innerHTML = `<div class="empty-state"><div class="emoji">👆</div><p>카톡 메시지를 붙여넣거나<br>TXT 파일을 올리고 버튼을 눌러보세요!</p></div>`;
+    return;
+  }
+  el.innerHTML = orders.map((o,i) => `
+    <div class="order-row ${o.confirmed===false?'unconfirmed':''}">
+      <span class="row-num">${i+1}</span>
+      <div class="row-body">
+        <span class="row-name">${o.name}</span>
+        <span class="row-item"> · ${o.item||'(항목없음)'} · ${o.qty}개${o.date?' · '+o.date:''}</span>
+      </div>
+      ${o.confirmed===true ? '<span class="row-badge badge-ok">✓</span>' : o.confirmed===false ? '<span class="row-badge badge-warn">⚠</span>' : ''}
+      <button class="row-del" onclick="deleteOrder(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function renderByItem() {
+  const el = document.getElementById('view-item');
+  if (!orders.length) { el.innerHTML=''; return; }
+  const map = {};
+  orders.forEach(o => {
+    const k = o.item||'(항목없음)';
+    if (!map[k]) map[k] = [];
+    map[k].push(o);
+  });
+  el.innerHTML = Object.entries(map).map(([item, list]) => {
+    const total = list.reduce((s,o)=>s+o.qty,0);
+    const rows = list.map(o => `<div class="group-row"><strong>${o.name}</strong> · ${o.qty}개${o.date?' · '+o.date:''}</div>`).join('');
+    return `<div class="group-card">
+      <div class="group-header">
+        <span class="group-title">🗂 ${item}</span>
+        <span class="group-count">총 ${total}개 · ${list.length}명</span>
+      </div>
+      <div class="group-rows">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderByName() {
+  const el = document.getElementById('view-name');
+  if (!orders.length) { el.innerHTML=''; return; }
+  const map = {};
+  orders.forEach(o => {
+    if (!map[o.name]) map[o.name] = [];
+    map[o.name].push(o);
+  });
+  el.innerHTML = Object.entries(map).map(([name, list]) => {
+    const total = list.reduce((s,o)=>s+o.qty,0);
+    const rows = list.map(o => `<div class="group-row"><strong>${o.item||'(항목없음)'}</strong> · ${o.qty}개${o.date?' · '+o.date:''}</div>`).join('');
+    return `<div class="group-card">
+      <div class="group-header">
+        <span class="group-title">👤 ${name}</span>
+        <span class="group-count">총 ${total}개</span>
+      </div>
+      <div class="group-rows">${rows}</div>
+    </div>`;
+  }).join('');
 }
 
 function updateStats() {
-  const totalQty = orders.reduce((s, o) => s + o.qty, 0);
-  document.getElementById('stat-people').textContent = orders.length;
+  const totalQty = orders.reduce((s,o)=>s+o.qty,0);
+  const names = new Set(orders.map(o=>o.name));
+  const items = new Set(orders.map(o=>o.item||'(항목없음)'));
+  document.getElementById('stat-people').textContent = names.size;
   document.getElementById('stat-qty').textContent = totalQty;
+  document.getElementById('stat-items').textContent = items.size;
   document.getElementById('bottom-total').textContent = totalQty;
 }
 
+function deleteOrder(idx) { orders.splice(idx,1); renderAll(); showToast('삭제했어요'); }
+function clearAll() {
+  if (!orders.length) return;
+  if (!confirm('주문 내역을 전부 삭제할까요?')) return;
+  orders=[]; renderAll();
+}
+
 function exportExcel() {
-  if (!orders.length) { showToast('주문 내역이 없어요', '#f87171'); return; }
+  if (!orders.length) { showToast('주문 내역이 없어요','#f87171'); return; }
   const today = new Date();
   const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-  const rows = orders.map((o, i) => ({
-    '번호': i + 1, '주문날짜': o.date || '', '고객명': o.name,
-    '항목': o.item || '', '수량': o.qty,
-    '검증상태': o.confirmed === true ? '✓ 검증됨' : o.confirmed === false ? '⚠️ 재확인' : '-'
-  }));
-  const totalQty = orders.reduce((s, o) => s + o.qty, 0);
-  rows.push({ '번호': '', '주문날짜': '', '고객명': '합계', '항목': '', '수량': totalQty, '검증상태': `총 ${orders.length}명` });
+  const rows = orders.map((o,i) => ({ '번호':i+1, '주문날짜':o.date||'', '고객명':o.name, '항목':o.item||'', '수량':o.qty, '검증':o.confirmed===true?'✓':o.confirmed===false?'⚠':'-' }));
+  const total = orders.reduce((s,o)=>s+o.qty,0);
+  rows.push({'번호':'','주문날짜':'','고객명':'합계','항목':'','수량':total,'검증':`${orders.length}명`});
   const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [{ wch: 6 }, { wch: 14 }, { wch: 18 }, { wch: 24 }, { wch: 8 }, { wch: 12 }];
+  ws['!cols']=[{wch:6},{wch:14},{wch:18},{wch:24},{wch:8},{wch:8}];
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, '주문현황');
-  XLSX.writeFile(wb, `공구주문_${dateStr}.xlsx`);
-  showToast('📊 엑셀 파일 저장됐어요!');
+  XLSX.utils.book_append_sheet(wb,ws,'주문현황');
+  XLSX.writeFile(wb,`공구주문_${dateStr}.xlsx`);
+  showToast('📊 엑셀 저장됐어요!');
 }
 
 function exportText() {
-  if (!orders.length) { showToast('주문 내역이 없어요', '#f87171'); return; }
-  const totalQty = orders.reduce((s, o) => s + o.qty, 0);
+  if (!orders.length) { showToast('주문 내역이 없어요','#f87171'); return; }
+  const total = orders.reduce((s,o)=>s+o.qty,0);
   let text = `📋 공동구매 주문 현황\n${'─'.repeat(30)}\n`;
-  orders.forEach((o, i) => { text += `${i+1}. ${o.date || '-'} / ${o.name} / ${o.item || '-'} / ${o.qty}개\n`; });
-  text += `${'─'.repeat(30)}\n👥 총 ${orders.length}명 / 📦 ${totalQty}개`;
-  navigator.clipboard.writeText(text).then(() => showToast('📋 클립보드에 복사했어요!')).catch(() => alert(text));
+  orders.forEach((o,i) => { text+=`${i+1}. ${o.date||'-'} / ${o.name} / ${o.item||'-'} / ${o.qty}개\n`; });
+  text+=`${'─'.repeat(30)}\n👥 ${[...new Set(orders.map(o=>o.name))].length}명 / 📦 ${total}개`;
+  navigator.clipboard.writeText(text).then(()=>showToast('📋 복사됐어요!')).catch(()=>alert(text));
 }
 
-function showToast(msg, color) {
-  color = color || '#4ade80';
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.style.background = color;
-  t.style.color = color === '#4ade80' ? '#052e16' : '#fff';
+function showToast(msg,color) {
+  color=color||'#4ade80';
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.background=color;
+  t.style.color=color==='#4ade80'?'#052e16':'#fff';
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
+
+// 초기 렌더
+renderAll();
 </script>
 </body>
 </html>
