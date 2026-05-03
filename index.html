@@ -314,24 +314,20 @@ const SYSTEM_PROMPT = `너는 카카오톡 공동구매 오픈채팅방의 주�
 형식: {"orders": [{"name": "닉네임", "item": "항목", "qty": 숫자, "date": "YYYY-MM-DD"}]}`;
 
 async function callAI(text) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": "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",
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-allow-browser": "true"
-    },
+  const prompt = SYSTEM_PROMPT + "\n\n다음 카톡 내용에서 주문 정보를 추출해줘:\n\n" + text.slice(0, 8000);
+  const apiKey = 'AIzaSyCmUlQZfk8KYfTLYHqtgbnN9U-C4Nj6i3c';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 2000,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: `다음 카톡 내용에서 주문 정보를 추출해줘:\n\n${text.slice(0, 8000)}` }]
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.1, maxOutputTokens: 2000 }
     })
   });
   const data = await res.json();
-  if (!data.content?.length) throw new Error('API 응답 없음');
-  const raw = data.content.map(i => i.text||'').join('');
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  if (!raw) throw new Error('API 응답 없음');
   const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
   if (!Array.isArray(parsed.orders)) throw new Error('형식 오류');
   return parsed;
