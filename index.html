@@ -223,7 +223,7 @@ function handleFile(file) {
 }
 
 function callAI(text) {
-  var prompt = SYSTEM_PROMPT + '\n\n다음 카톡 내용에서 주문 정보를 추출해줘:\n\n' + text.slice(0, 8000);
+  var prompt = SYSTEM_PROMPT + '\n\n다음 카톡 내용에서 주문 정보를 추출해줘:\n\n' + text.slice(0, 3000);
   var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + GEMINI_KEY;
   return fetch(url, {
     method: 'POST',
