@@ -9,20 +9,7 @@
   :root {
     --kakao: #FEE500; --kakao-dark: #3A1D1D;
     --bg: #1a1a2e; --surface: #16213e;
-    --green: #4ade80; --red: #f87171;한 박스 👉🏻 19,900원
-한 박스 👉🏻 19,900원
-[아기천사4672] [오전 11:06] 서리태콩물1, 우뭇콩물1, 라탄베이지 1
-[따뜻한자리만촌점꼬요] [오전 11:06] 🥛 세브란스케어 (200ml x 16개입)
-정상판매가 29,900원
-
-한 박스 👉🏻 19,900원
-한 박스 👉🏻 19,900원
-[라이언1460] [오전 11:07] 버터쿠키1
-[웃는달2630] [오전 11:09] 망고시루케잌 1
-[햇님♡6169] [오전 11:10] 세브란스케어1
-[모모야1212] [오전 11:11] 한우너비아니2
-한돈너비아니2
-[로즈1781] [오전 11:11] 세브란스케어 1v
+    --green: #4ade80; --red: #f87171;
     --text: #e2e8f0; --muted: #94a3b8;
     --orange: #f59e0b;
   }
@@ -342,10 +329,10 @@ async function callAI(text) {
       generationConfig: { temperature: 0.1, maxOutputTokens: 2000 }
     })
   });
-  if (!res.ok) throw new Error('API 응답 없음');
+  if (!res.ok) throw new Error('API ' + res.status);
   const data = await res.json();
   const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  if (!raw) throw new Error('API 응답 없음');
+  if (!raw) throw new Error('응답 없음');
   const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
   if (!Array.isArray(parsed.orders)) throw new Error('형식 오류');
   return parsed;
