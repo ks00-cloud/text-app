@@ -314,9 +314,13 @@ const SYSTEM_PROMPT = `너는 카카오톡 공동구매 오픈채팅방의 주�
 형식: {"orders": [{"name": "닉네임", "item": "항목", "qty": 숫자, "date": "YYYY-MM-DD"}]}`;
 
 async function callAI(text) {
-  const prompt = SYSTEM_PROMPT + "\n\n다음 카톡 내용에서 주문 정보를 추출해줘:\n\n" + text.slice(0, 8000);
+  const prompt = SYSTEM_PROMPT + "
+
+다음 카톡 내용에서 주문 정보를 추출해줘:
+
+" + text.slice(0, 8000);
   const apiKey = 'AIzaSyCmUlQZfk8KYfTLYHqtgbnN9U-C4Nj6i3c';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey;
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -325,6 +329,7 @@ async function callAI(text) {
       generationConfig: { temperature: 0.1, maxOutputTokens: 2000 }
     })
   });
+  if (!res.ok) throw new Error('API 응답 없음');
   const data = await res.json();
   const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   if (!raw) throw new Error('API 응답 없음');
